@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Three-language law review</title>
+<style>
+:root{--bg:#f6f2ea;--card:#fffdf8;--ink:#23262b;--mute:#6a6e75;--line:#e1d9c9;--acc:#1f5c57;--acc2:#e6f0ee;
+--crit:#a8321f;--high:#c2641a;--med:#a98512;--low:#5b6b7c;--hl:#f6e3a1;--fault:#f3c9bf;--ok:#2f7a4f;
+--serif:"Iowan Old Style","Palatino Linotype",Palatino,Charter,Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#171a1d;--card:#1f2327;--ink:#e8e4da;--mute:#9aa0a6;--line:#33393f;--acc:#6fc2b8;--acc2:#1d2e2c;
+--crit:#ee8a76;--high:#eba463;--med:#d9bd54;--low:#94a6b8;--hl:#5a4b1c;--fault:#5c2e27;--ok:#7ccf9b}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:.45em .85em;transition:background .2s,border-color .2s,transform .1s}
+button:hover{border-color:var(--acc)}button:active{transform:scale(.97)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+header{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;padding:.8rem 1.2rem;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:5}
+h1{font:600 1.15rem var(--serif);margin:0;letter-spacing:.01em}
+.tabs{display:flex;gap:.3rem}.tabs button{border:0;background:none;border-bottom:2px solid transparent;border-radius:0}
+.tabs button[aria-selected=true]{border-color:var(--acc);color:var(--acc);font-weight:600}
+.sp{flex:1}.chip{font-size:.75rem;padding:.1em .6em;border-radius:99px;background:var(--acc2);color:var(--acc)}
+main{max-width:1400px;margin:0 auto;padding:1rem 1.2rem 4rem}
+.how{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;background:var(--acc2);border-radius:12px;padding:.7rem 1rem;margin-bottom:1rem}
+.how ol{display:flex;gap:1.2rem;flex-wrap:wrap;margin:0;padding:0;list-style:none;flex:1}
+.how li{display:flex;gap:.5rem;align-items:center}.how b{display:grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--acc);color:var(--bg);font-size:.8rem}
+.sum{font:1.25rem/1.4 var(--serif);margin:.4rem 0 .8rem}.sum small{display:block;font:.85rem var(--sans);color:var(--mute)}
+.prog{height:8px;background:var(--line);border-radius:9px;overflow:hidden}.prog i{display:block;height:100%;width:0;background:var(--ok);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.pl{display:flex;justify-content:space-between;font-size:.85rem;color:var(--mute);margin:.3rem 0 .8rem}
+.bar{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}.bar input{flex:1;min-width:180px;padding:.45em .8em;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.bar select{padding:.45em;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.grid{display:grid;grid-template-columns:230px 1fr;gap:1.2rem;align-items:start}
+@media(max-width:820px){.grid{grid-template-columns:1fr}#list{display:flex;overflow-x:auto;gap:.4rem}#list button{flex:none}}
+#list{display:flex;flex-direction:column;gap:.3rem;position:sticky;top:4.5rem;max-height:70vh;overflow:auto}
+@media(max-width:820px){#list{position:static}}
+#list button{text-align:left;display:flex;gap:.5rem;align-items:center;width:100%}
+#list button[aria-current=true]{background:var(--acc2);border-color:var(--acc)}
+.dot{width:.65rem;height:.65rem;border-radius:50%;flex:none}.critical{--c:var(--crit)}.high{--c:var(--high)}.medium{--c:var(--med)}.low{--c:var(--low)}
+.dot{background:var(--c)}.ttl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.85rem}
+h2{font:600 1.35rem var(--serif);margin:0 0 .2rem}.src{color:var(--mute);font-size:.82rem;margin-bottom:.8rem}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem}
+.col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.8rem 1rem}
+.col.odd{border-color:var(--crit);box-shadow:inset 4px 0 0 var(--crit)}
+.col h3{display:flex;justify-content:space-between;margin:0 0 .4rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.col h3 em{font-style:normal;color:var(--crit);font-weight:700}
+.col p{font:1.02rem/1.65 var(--serif);margin:0}
+mark{background:var(--hl);color:inherit;border-radius:3px;padding:0 2px;cursor:pointer;border-bottom:2px solid var(--c,var(--med))}
+mark.fault{background:var(--fault)}mark sup{font:700 .65rem var(--sans);margin-left:2px;color:var(--acc)}
+.enter{animation:in .35s ease both}@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;padding:1rem 1.1rem;margin-top:1rem;scroll-margin-top:5rem}
+.card.cur{box-shadow:0 0 0 2px var(--acc2),0 0 0 3px var(--acc)}
+.card{position:relative}.card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--hl);opacity:0;pointer-events:none}.card.pulse::after{animation:pl 1.2s ease}@keyframes pl{30%{opacity:.4}}.enter .card{animation:in .45s ease both;animation-delay:var(--d,0ms)}.enter .col{animation:in .4s ease both}mark{transition:filter .2s}mark:hover{filter:brightness(.93)}
+.card.done{opacity:.7}.ch{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.n{display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--acc);color:var(--bg);font-weight:700;font-size:.85rem}
+.lab{font-weight:600;font-size:1.05rem}
+.sev{position:relative;font-size:.75rem;font-weight:700;color:var(--c);border:1px solid var(--c);border-radius:99px;padding:.05em .6em;cursor:help;text-transform:capitalize}
+.sev::after{content:attr(data-tip);position:absolute;left:0;top:130%;width:240px;background:var(--ink);color:var(--bg);font:400 .8rem/1.4 var(--sans);padding:.5rem .7rem;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:3;text-transform:none}
+.sev:hover::after,.sev:focus::after{opacity:1}
+.unc{background:var(--hl);font-size:.78rem;font-weight:700;padding:.1em .7em;border-radius:99px}
+.meta{color:var(--mute);font-size:.8rem}.sug{margin:.8rem 0;padding:.7rem .9rem;background:var(--acc2);border-radius:10px}
+.sug b{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}.sug p{font:1.05rem/1.55 var(--serif);margin:.2rem 0 .5rem}
+details{margin:.5rem 0;font-size:.9rem}summary{cursor:pointer;color:var(--acc)}
+.act{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
+.act button[aria-pressed=true]{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+kbd{font:.75rem monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 .35em}
+table{border-collapse:collapse;width:100%;background:var(--card);border-radius:12px;overflow:hidden;font-size:.9rem}
+th,td{padding:.6rem .8rem;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin:1rem 0}
+.charts>div,.note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem}
+.charts h3{margin:0 0 .5rem;font:600 1rem var(--serif)}.note{font-family:var(--serif);line-height:1.6}
+.bw{transition:width .8s cubic-bezier(.2,.8,.2,1)}
+#toast{position:fixed;bottom:1rem;left:50%;transform:translate(-50%,40px);background:var(--ink);color:var(--bg);padding:.5rem 1rem;border-radius:99px;opacity:0;transition:.3s}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.empty{padding:2rem;text-align:center;color:var(--mute)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style></head><body>
+<header><h1>Three-language law review</h1>
+<div class="tabs" role="tablist"><button role="tab" id="t1" aria-selected="true">Review</button><button role="tab" id="t2" aria-selected="false">Evaluation</button></div>
+<span class="chip" id="syn" hidden>Test data</span><span class="sp"></span>
+<button id="xc">Export CSV</button><button id="xj">Export JSON</button></header>
+<main id="rv">
+<div class="how" id="how"><strong>How to use</strong><ol>
+<li><b>1</b>Read the highlighted differences</li><li><b>2</b>Decide on each finding</li><li><b>3</b>Export your decisions</li></ol>
+<button id="hx" aria-label="Dismiss how to use">Got it</button></div>
+<div class="sum" id="sum" aria-live="polite"></div>
+<div class="prog" role="progressbar" id="pb" aria-valuemin="0" aria-valuemax="100"><i id="pf"></i></div>
+<div class="pl"><span id="pt"></span><span>Keys: <kbd>j</kbd>/<kbd>k</kbd> move · <kbd>c</kbd> confirm · <kbd>d</kbd> dismiss · <kbd>e</kbd> ask an expert</span></div>
+<div class="bar"><input id="q" type="search" autocomplete="off" placeholder="Search articles, wording, explanations…" aria-label="Search">
+<select id="fs" aria-label="Severity"><option value="">All severities</option><option value="critical">Critical</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+<select id="fd" aria-label="Status"><option value="">All findings</option><option value="open">Still to decide</option><option value="done">Already decided</option><option value="unc">Needs human decision</option></select></div>
+<div class="grid"><nav id="list" aria-label="Articles"></nav><section id="art"></section></div></main>
+<main id="ev" hidden></main><div id="toast" role="status"></div>
+<script>addEventListener("error",function(ev){var d=document.createElement("div");d.style.cssText="background:#a8321f;color:#fff;padding:10px 16px;font:14px system-ui";d.textContent="Something went wrong while starting the tool: "+ev.message;document.body.prepend(d)})</script>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const SAMPLE={meta:{name:"Sample (test data)",synthetic:true,note:"Invented examples for testing."},stats:{n_articles:3,mode:"cascade",llm_mode:"on",llm_unavailable:false},
+results:[
+{act_id:"SR 220",art_id:"a12",num:"Art. 12",act_title:"Code of Obligations – Notice periods",sources:{de:"fedlex",fr:"fedlex",it:"fedlex"},
+texts:{de:"Die Kündigung muss innert 30 Tagen schriftlich erfolgen.",fr:"La résiliation peut être faite par écrit dans les 60 jours.",it:"La disdetta deve avvenire per scritto entro 30 giorni."},
+max_severity:"critical",escalated:true,rejected:[],divergences:[
+{type:"number",languages_at_fault:["fr"],spans:{de:["30 Tagen"],fr:["60 jours"],it:["30 giorni"]},explanation:"The French text gives 60 days; German and Italian give 30.",severity:"critical",source:"rules",origins:["rules","llm70"],confidence:.96,verdict:"confirmed",verdict_reason:"Both other versions agree on 30, so the French figure is the outlier.",suggestion:"La résiliation doit être faite par écrit dans les 30 jours.",grounded:true},
+{type:"modality",languages_at_fault:["fr"],spans:{de:["muss"],fr:["peut"],it:["deve"]},explanation:"French says 'may' where German and Italian say 'must'.",severity:"critical",source:"llm",origins:["llm8","llm70"],confidence:.9,verdict:"confirmed",verdict_reason:"A duty became a permission in French.",suggestion:"La résiliation doit être faite par écrit dans les 30 jours.",grounded:true}]},
+{act_id:"SR 220",art_id:"a14",num:"Art. 14",act_title:"Code of Obligations – Compensation",sources:{de:"fedlex",fr:"fedlex",it:"fedlex"},
+texts:{de:"Der Schaden wird nach Ermessen des Gerichts ersetzt.",fr:"Le dommage est réparé selon l'appréciation du juge.",it:"Il danno è risarcito secondo il prudente apprezzamento del giudice."},
+max_severity:"medium",escalated:false,rejected:[{type:"term",explanation:"Rejected: synonyms."}],divergences:[
+{type:"terminology",languages_at_fault:["it"],spans:{de:["Ermessen"],fr:["appréciation"],it:["prudente apprezzamento"]},explanation:"Italian adds a nuance ('prudent') that is not in the other versions.",severity:"medium",source:"llm",origins:["llm8"],confidence:.55,verdict:"uncertain",verdict_reason:"Could be an established Italian legal phrase.",suggestion:"Il danno è risarcito secondo l'apprezzamento del giudice.",grounded:false}]},
+{act_id:"SR 221",art_id:"a3",num:"Art. 3",act_title:"Data protection – Scope",sources:{de:"fedlex",fr:"fedlex",it:"fedlex"},
+texts:{de:"Das Gesetz gilt nicht für Verfahren vor Gericht.",fr:"La loi s'applique aux procédures judiciaires.",it:"La legge non si applica alle procedure giudiziarie."},
+max_severity:"high",escalated:false,rejected:[],divergences:[
+{type:"negation",languages_at_fault:["fr"],spans:{de:["nicht"],fr:["s'applique"],it:["non"]},explanation:"The French version is missing the negation.",severity:"high",source:"rules",origins:["rules"],confidence:.88,verdict:"confirmed",verdict_reason:"",suggestion:"La loi ne s'applique pas aux procédures judiciaires.",grounded:true}]}],
+eval:{n_cases:120,types:["number","modality","negation"],modes:{
+rules:{precision:.91,recall:.52,f1:.66,false_positive_rate:.03,typed_recall:.5,attribution_accuracy:.8,escalation_rate:0,per_type:{number:{n:40,recall:.8},modality:{n:40,recall:.3},negation:{n:40,recall:.45}},cost:{cost_units_8b_equiv:0}},
+llm8:{precision:.74,recall:.78,f1:.76,false_positive_rate:.12,typed_recall:.7,attribution_accuracy:.74,escalation_rate:0,per_type:{number:{n:40,recall:.85},modality:{n:40,recall:.75},negation:{n:40,recall:.74}},cost:{cost_units_8b_equiv:120}},
+llm70:{precision:.89,recall:.86,f1:.87,false_positive_rate:.05,typed_recall:.83,attribution_accuracy:.88,escalation_rate:0,per_type:{number:{n:40,recall:.9},modality:{n:40,recall:.85},negation:{n:40,recall:.84}},cost:{cost_units_8b_equiv:900}},
+cascade:{precision:.9,recall:.85,f1:.87,false_positive_rate:.04,typed_recall:.82,attribution_accuracy:.87,escalation_rate:.22,per_type:{number:{n:40,recall:.9},modality:{n:40,recall:.84},negation:{n:40,recall:.82}},cost:{cost_units_8b_equiv:330}}}},figures:{}};
+let D;try{D=JSON.parse(document.getElementById("data").textContent)}catch(_){D=null}
+if(!D||!Array.isArray(D.results))D=SAMPLE;
+const $=id=>document.getElementById(id),L3=["de","fr","it"],LN={de:"German",fr:"French",it:"Italian"};
+const e=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const TYPES={modality:"Duty vs permission differs",number:"Deadline or amount differs",negation:"Yes/no meaning differs",terminology:"Legal term differs",scope:"Who or what is covered differs",omission:"Something is missing",addition:"Something extra was added",reference:"Cross-reference points elsewhere",unit:"Unit differs (e.g. days vs months)",date:"Date differs",quantifier:"Minimum or maximum differs"};
+const lab=t=>TYPES[t]||(String(t||"Difference").replace(/_/g," ").replace(/^./,c=>c.toUpperCase())+" differs");
+const SEV={critical:"Critical: the versions disagree on a duty, right, number or deadline. Fix before publication.",high:"High: the meaning clearly differs, but with less direct legal effect.",medium:"Medium: a likely difference in nuance; worth a look.",low:"Low: minor wording or style difference."};
+const RK={critical:0,high:1,medium:2,low:3},MODE={rules:"Rule checks",llm8:"Small AI model",llm70:"Large AI model",cascade:"Cascade (small model, large when unsure)"};
+let store={};const SK="lawreview:"+((D.meta&&D.meta.name)||"x");
+try{store=JSON.parse(localStorage.getItem(SK)||"{}")}catch(_){}
+const save=()=>{try{localStorage.setItem(SK,JSON.stringify(store))}catch(_){}};
+const dec=store.dec=store.dec||{};
+const key=(r,i)=>r.act_id+"|"+r.art_id+"|"+i;
+const ALL=D.results.filter(r=>(r.divergences||[]).length).sort((a,b)=>RK[a.max_severity]-RK[b.max_severity]);
+let s={a:0,f:0},L=ALL;
+function filt(){const q=$("q").value.trim().toLowerCase(),sv=$("fs").value,st=$("fd").value;
+L=ALL.filter(r=>{if(sv&&!r.divergences.some(d=>d.severity===sv))return false;
+if(st){const m=r.divergences.some((d,i)=>{const x=dec[key(r,i)];return st==="open"?!x:st==="done"?!!x:d.verdict==="uncertain"&&!x});if(!m)return false}
+if(q){const h=[r.num,r.act_title,...L3.map(l=>r.texts[l]),...r.divergences.map(d=>d.explanation)].join(" ").toLowerCase();if(!h.includes(q))return false}return true});
+if(s.a>=L.length)s.a=0}
+function stats(){let n=0,d=0,c=0,h=0,u=0;ALL.forEach(r=>r.divergences.forEach((x,i)=>{n++;if(dec[key(r,i)])d++;else{if(x.severity==="critical")c++;if(x.severity==="high")h++;if(x.verdict==="uncertain")u++}}));return{n,d,c,h,u}}
+function summ(){const t=stats(),p=(k,w)=>k+" "+w+(k===1?"":"s");let m;
+if(!t.n)m="No differences were found between the three versions.";
+else if(t.c+t.h===0)m=t.d===t.n?"All findings are reviewed. Export your decisions below.":"No urgent problems left. "+p(t.n-t.d,"finding")+" still to decide.";
+else m="Start here: "+(t.c?p(t.c,"critical problem")+" where the versions disagree on a duty or a number":"")+(t.c&&t.h?" and ":"")+(t.h?p(t.h,"high-priority difference"):"")+".";
+$("sum").innerHTML=e(m)+"<small>"+(t.u?t.u+" need"+(t.u===1?"s":"")+" a human decision. ":"")+(D.stats&&D.stats.llm_unavailable?"The AI checker was unavailable, so only rule checks ran. ":"")+(D.meta&&D.meta.synthetic&&D.meta.note?e(D.meta.note)+" ":"")+ALL.length+" of "+D.results.length+" articles have findings.</small>";
+const pc=t.n?Math.round(100*t.d/t.n):0;$("pf").style.width=pc+"%";$("pb").setAttribute("aria-valuenow",pc);$("pt").textContent=t.d+" of "+t.n+" reviewed"}
+function list(){$("list").innerHTML=L.map((r,i)=>{const dn=r.divergences.every((_,j)=>dec[key(r,j)]);return`<button data-a="${i}" ${i===s.a?'aria-current="true"':""}><span class="dot ${r.max_severity}"></span><span class="ttl">${e(r.num)} · ${e(r.act_title)}</span>${dn?"✓":""}</button>`}).join("")||""}
+function hl(r){const out={};L3.forEach(l=>{const t=r.texts[l]||"",R=[];
+r.divergences.forEach((d,i)=>{const A=((d.spans||{})[l]||[]).filter(Boolean);
+A.filter(x=>!A.some(y=>y!==x&&y.length<x.length&&x.includes(y))).forEach(sp=>{const k=t.indexOf(sp);if(k>=0)R.push([k,k+sp.length,i])})});
+R.sort((a,b)=>a[0]-b[0]);const G=[];R.forEach(([a,b,i])=>{const g=G[G.length-1];if(g&&a<g.b){g.b=Math.max(g.b,b);if(!g.i.includes(i))g.i.push(i)}else G.push({a,b,i:[i]})});
+let o="",p=0;G.forEach(g=>{const ds=g.i.map(i=>r.divergences[i]),sv=ds.map(d=>d.severity).sort((x,y)=>RK[x]-RK[y])[0],ft=ds.some(d=>(d.languages_at_fault||[]).includes(l)),n=g.i.map(i=>i+1).join(",");
+o+=e(t.slice(p,g.a))+`<mark class="${sv}${ft?" fault":""}" tabindex="0" role="button" data-f="${g.i[0]}" title="Go to finding ${n}">${e(t.slice(g.a,g.b))}<sup>${n}</sup></mark>`;p=g.b});
+out[l]=o+e(t.slice(p))});return out}
+function sugg(t){if(!/^(DE|FR|IT):/.test(t))return[{l:"",t}];return t.split(/;\s*(?=(?:DE|FR|IT):)/).map(x=>{const q=x.match(/^(DE|FR|IT):\s*"?(.*?)"?;?$/);return q?{l:q[1],t:q[2]}:{l:"",t:x}})}
+function art(anim){const r=L[s.a];if(!r){$("art").innerHTML='<div class="empty">Nothing matches your filters.<br><br><button id="cf">Clear filters</button></div>';$("cf").onclick=()=>{$("q").value=$("fs").value=$("fd").value="";s={a:0,f:0};render(true)};return}
+const H=hl(r),odd={};r.divergences.forEach(d=>(d.languages_at_fault||[]).forEach(l=>odd[l]=1));
+let h=`<div class="${anim?"enter":""}"><h2>${e(r.num)} · ${e(r.act_title)}</h2><div class="src">${e(r.act_id)}${r.escalated?" · double-checked by the larger model":""}</div><div class="cols">`+
+L3.map(l=>`<div class="col ${odd[l]?"odd":""}"><h3><span>${LN[l]}</span>${odd[l]?"<em>Odd one out</em>":""}</h3><p lang="${l}">${H[l]}</p></div>`).join("")+"</div>";
+h+=r.divergences.map((d,i)=>{const x=dec[key(r,i)],u=d.verdict==="uncertain"&&!x;
+return`<article class="card ${d.severity} ${x?"done":""} ${i===s.f?"cur":""}" id="c${i}" data-i="${i}" style="--d:${i*80+120}ms"><div class="ch"><span class="n">${i+1}</span><span class="lab">${e(lab(d.type))}</span>
+<span class="sev ${d.severity}" tabindex="0" data-tip="${e(SEV[d.severity]||"")}">${e(d.severity)}</span>${u?'<span class="unc">Needs a human decision</span>':""}
+<span class="meta">Differs in: ${(d.languages_at_fault||[]).map(l=>LN[l]).join(", ")||"unclear"} · confidence ${Math.round((d.confidence||0)*100)}%${d.origins?" · found by "+e(d.origins.join(", ")):""}</span></div>
+<p>${e(d.explanation)}</p>${d.suggestion?`<div class="sug"><b>Suggested wording</b>${sugg(d.suggestion).map((x,j)=>`<p>${x.l?`<span class="meta">${x.l}</span> `:""}${e(x.t)}</p><button data-copy="${i}.${j}">Copy${x.l?" "+x.l:" wording"}</button> `).join("")}<div class="meta" style="margin-top:.5rem">Written by the AI checker. Read it once more before you use it.</div></div>`:""}
+${d.verdict_reason?`<details><summary>Why the checker thinks so</summary><p>${e(d.verdict_reason)}${d.grounded===false?" (Not backed by a quoted passage – check carefully.)":""}</p></details>`:""}
+<div class="act">${[["confirmed","Confirm","c"],["dismissed","Dismiss","d"],["expert","Ask an expert","e"]].map(([k,t,c])=>`<button data-d="${k}" aria-pressed="${x===k}">${t} <kbd>${c}</kbd></button>`).join("")}</div></article>`}).join("");
+if((r.rejected||[]).length)h+=`<details><summary>${r.rejected.length} possible difference${r.rejected.length>1?"s":""} the checker ruled out</summary>${r.rejected.map(d=>`<p class="meta">${e(lab(d.type))}: ${e(d.explanation||"")}</p>`).join("")}</details>`;
+$("art").innerHTML=h+"</div>"}
+function render(anim){filt();summ();list();art(anim)}
+function cur(){return L[s.a]}
+function pulse(i){const c=$("c"+i);if(!c)return;document.querySelectorAll(".card").forEach(x=>x.classList.toggle("cur",x===c));
+c.scrollIntoView({behavior:"smooth",block:"center"});c.classList.remove("pulse");void c.offsetWidth;c.classList.add("pulse")}
+function go(a,f){const ch=a!==s.a;s.a=a;s.f=f;if(ch){list();art(true)}pulse(f)}
+function flat(){const o=[];L.forEach((r,a)=>r.divergences.forEach((_,f)=>o.push([a,f])));return o}
+function move(k){const F=flat();if(!F.length)return;let i=F.findIndex(x=>x[0]===s.a&&x[1]===s.f);i=Math.max(0,Math.min(F.length-1,i+k));go(...F[i])}
+function decide(v){const r=cur();if(!r)return;const k=key(r,s.f);if(dec[k]===v)delete dec[k];else dec[k]=v;save();summ();list();const y=scrollY;art(false);scrollTo(0,y);pulse(s.f)}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1600)}
+function copy(t){try{navigator.clipboard.writeText(t).then(()=>toast("Copied"),fb)}catch(_){fb()}
+function fb(){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();try{document.execCommand("copy");toast("Copied")}catch(_){toast("Copy failed")}a.remove()}}
+$("list").onclick=ev=>{const b=ev.target.closest("[data-a]");if(b)go(+b.dataset.a,0)};
+$("art").onclick=ev=>{const m=ev.target.closest("mark"),c=ev.target.closest(".card"),b=ev.target.closest("button");
+if(m){s.f=+m.dataset.f;pulse(s.f);return}if(c)s.f=+c.dataset.i;
+if(b&&b.dataset.d)decide(b.dataset.d);else if(b&&b.dataset.copy!=null){const[i,j]=b.dataset.copy.split(".");copy(sugg(cur().divergences[+i].suggestion)[+j].t)}
+else if(c){document.querySelectorAll(".card").forEach(x=>x.classList.toggle("cur",x===c))}};
+$("art").onkeydown=ev=>{if((ev.key==="Enter"||ev.key===" ")&&ev.target.tagName==="MARK"){ev.preventDefault();ev.target.click()}};
+["q","fs","fd"].forEach(i=>$(i).oninput=()=>{s={a:0,f:0};render(true)});
+addEventListener("keydown",ev=>{if(ev.metaKey||ev.ctrlKey||ev.altKey||/INPUT|SELECT|TEXTAREA/.test(ev.target.tagName)||$("rv").hidden)return;
+const k=ev.key;if(k==="j")move(1);else if(k==="k")move(-1);else if(k==="c")decide("confirmed");else if(k==="d")decide("dismissed");else if(k==="e")decide("expert")});
+function dl(n,t,m){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:m}));a.download=n;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+function rows(){const o=[];ALL.forEach(r=>r.divergences.forEach((d,i)=>o.push({act:r.act_id,article:r.num,type:lab(d.type),severity:d.severity,differs_in:(d.languages_at_fault||[]).join("+"),explanation:d.explanation,suggestion:d.suggestion||"",needs_human:d.verdict==="uncertain"?"yes":"no",decision:dec[key(r,i)]||"undecided"})));return o}
+$("xj").onclick=()=>dl("review-decisions.json",JSON.stringify({meta:D.meta,decisions:rows()},null,2),"application/json");
+$("xc").onclick=()=>{const R=rows(),H=Object.keys(R[0]||{act:1});dl("review-decisions.csv","\ufeff"+[H.join(",")].concat(R.map(r=>H.map(h=>'"'+String(r[h]).replace(/"/g,'""')+'"').join(","))).join("\r\n"),"text/csv")};
+function tab(n){const a=n===1;$("rv").hidden=!a;$("ev").hidden=a;$("t1").setAttribute("aria-selected",a);$("t2").setAttribute("aria-selected",!a);if(!a)evalView()}
+$("t1").onclick=()=>tab(1);$("t2").onclick=()=>tab(2);
+if(store.how){$("how").hidden=true}$("hx").onclick=()=>{$("how").hidden=true;store.how=1;save()};
+$("syn").hidden=!(D.meta&&D.meta.synthetic);
+const pc=v=>v==null?"–":Math.round(v*100)+"%";
+function chart(items){return`<svg viewBox="0 0 340 ${items.length*30+4}" width="100%" role="img">`+items.map((x,i)=>`<text x="0" y="${i*30+17}" font-size="10.5" fill="currentColor">${e(x.l)}</text><rect x="130" y="${i*30+5}" width="150" height="16" rx="4" fill="var(--line)"/><rect class="bw" x="130" y="${i*30+5}" width="0" data-w="${Math.max(0,x.v*150)}" height="16" rx="4" fill="var(--acc)"/><text x="286" y="${i*30+17}" font-size="11" fill="currentColor">${x.t||pc(x.v)}</text>`).join("")+"</svg>"}
+function evalView(){const V=D.eval;if(!V||!V.modes){$("ev").innerHTML='<div class="empty">No evaluation was included with this data.</div>';return}
+const M=Object.entries(V.modes),cs=m=>(m.cost||{}).cost_units_8b_equiv,mx=Math.max(1,...M.map(([,m])=>cs(m)||0)),nm=k=>MODE[k]||k,sh=k=>nm(k).split(" (")[0],cc=m=>cs(m)==null?"–":cs(m)===0?"free":Math.round(cs(m)/1000)+"k";
+const ty=k=>V.modes[k]?`<div><h3>Found by type: ${e(sh(k).toLowerCase())}</h3>${chart(Object.entries(V.modes[k].per_type||{}).map(([t,x])=>({l:lab(t).replace(/ \(.*\)/,"").replace(" differs","")+" ("+x.n+")",v:x.recall})))}</div>`:"";
+$("ev").innerHTML=`<h2>How well does the checker work?</h2><p class="meta">Tested on ${V.n_cases} cases where the right answer is known${D.meta&&D.meta.synthetic?" (invented test text)":""}.</p>
+<div style="overflow-x:auto"><table><tr><th>Method</th><th>Real problems found</th><th>Precision</th><th>Recall</th><th>F1</th><th>False alarms</th><th>Right language blamed</th><th>Relative cost</th></tr>`+
+M.map(([k,m])=>`<tr><td>${e(nm(k))}</td><td>${m.tp==null?"–":m.tp+" of "+m.n_positive}</td><td>${pc(m.precision)}</td><td>${pc(m.recall)}</td><td>${pc(m.f1)}</td><td>${pc(m.false_positive_rate)}</td><td>${pc(m.attribution_accuracy)}</td><td>${cc(m)}</td></tr>`).join("")+`</table></div>
+<div class="charts"><div><h3>Real problems found, by method</h3>${chart(M.map(([k,m])=>({l:sh(k),v:m.recall})))}</div>
+<div><h3>Cost (lower is cheaper)</h3>${chart(M.map(([k,m])=>({l:sh(k),v:(cs(m)||0)/mx,t:cc(m)})))}</div>${ty("llm70")}${ty("cascade")}</div>
+<div class="note"><b>What these numbers mean.</b> <i>Precision</i>: when the tool flags something, how often it is a real problem. <i>Recall</i>: of all real problems, how many it finds. <i>F1</i> blends the two. <i>False alarms</i>: how often a harmless text is flagged. <i>Right language blamed</i>: how often it names the correct odd-one-out version. <i>Cost</i> is in thousands of units, where one unit is the price of one small-model token.<br><br><b>Read with care.</b> ${V.n_cases<50?"Only "+V.n_cases+" cases were tested, so a single extra miss would visibly move every score. ":""}${D.meta&&D.meta.synthetic?"The errors in the test text were planted on purpose, so real law will likely be harder. ":""}Strong scores here are encouraging, not a guarantee. Nothing is final until a person has decided.</div>`;
+requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".bw").forEach(r=>r.style.width=r.dataset.w+"px")))}
+["q","fs","fd"].forEach(i=>$(i).value="");
+render(true);
+</script></body></html>

@@ -1,103 +1,94 @@
-# Track 2 B: Own Project
+# Concordance: cross-lingual consistency auditing for Swiss federal law
 
-Bring your own idea and build a working Apertus prototype that tackles a problem you care about — any domain, any use case. The project must be new, started within the hackathon period.
+> Track 2B (Own Project), Hack Apertus Online. Built on **Apertus v1.5 8B + 70B**.
 
-Submissions must use the Apertus model family.
-For Track 2 this means that submitted solutions must be built with Apertus. Other open-weights models can be used to support development, e.g. as automatic judges during evaluation. Their role must be clearly described in the submission report.
+German, French and Italian versions of Swiss federal law are **equally authentic**. If they
+diverge (one says *kann*, another *doit*; one says 30 days, another 60), that is a legal defect.
+Today the check is largely manual. Concordance aligns the three versions article by article and
+reports divergences in legal meaning, with evidence, severity, a proposed harmonised wording and a
+human review workflow.
 
-💬 In case you have questions, join the conversation on [Discord](https://discord.gg/hack-apertus) or send an email to “hello@hackapertus.ch”
+It is built for pre-publication legislative work, which cannot be sent to a foreign cloud:
+it runs **air-gapped** on the 8B/70B models.
 
----
+## Run it (judges)
 
-## 🔧 Resources & Tools
+Requires Docker only.
 
-Check our resources & tools page for detailed information:
-https://hackapertus.notion.site/resources-tools
+```bash
+make run          # builds the image, runs with the network DISABLED, replays recorded Apertus answers
+```
 
-| Models           | URL                                      |
-|------------------|------------------------------------------|
-| Apertus v1.5 8B  | [huggingface.co/swiss-ai/Apertus-v1.5-8B](https://huggingface.co/swiss-ai/Apertus-v1.5-8B)  |
-| Apertus v1.5 70B | [huggingface.co/swiss-ai/Apertus-v1.5-70B](https://huggingface.co/swiss-ai/Apertus-v1.5-70B) |
+Then open **`out/review.html`** in a browser. Also written: `out/summary.md`, `out/eval_table.md`,
+`out/eval_results.json`, `out/findings.json`.
 
+`make run` uses `docker run --network none`: it proves nothing needs the internet. Every model response
+behind the reported numbers is committed in `data/cache/*.jsonl` and replayed deterministically.
+No API key is needed.
 
-## Target architecture (mandatory)
+Fresh model calls (optional): copy `.env.example` to `.env`, set `CSCS_API_KEY`, then `make warm`.
 
-Whatever you build in Track 2B must be deployable in one of these three architectures:
+## What it does
 
-- **a) On-premise** — on the organisation's own infrastructure, under its own administration.
-- **b) Air-gapped** — with no external network connection at runtime.
-- **c) Sovereign Swiss cloud** — on a cloud platform operated in Switzerland, under Swiss jurisdiction, with Swiss data residency.
+1. **Aligns** acts from Fedlex (Akoma Ntoso XML) on language-independent article ids; articles
+   missing in a language are recorded as structural divergences.
+2. **Rule engine** (no model): numbers (incl. Swiss `200’000` formats and spelled-out numbers), units,
+   dates, cross-references, modal force (may / must / must not / need not), negation (ignores
+   *ne … que* and *sans délai*), quantifiers, confusable legal concepts (creditor/debtor,
+   employer/employee, fine/imprisonment, ...), length-ratio omissions. The odd-one-out language is
+   attributed by majority vote.
+3. **Apertus 8B triage** reads all three versions and proposes divergences as strict JSON with verbatim quotes.
+4. **Apertus 70B verification** runs **only on articles that have candidates**. It confirms, refutes
+   or marks uncertain, may add what the earlier stages missed, and proposes a harmonised wording.
+5. **Hallucination guard:** every quoted span is checked against the source text; quotes not found
+   verbatim are flagged and down-weighted.
+6. **Review UI** (single offline HTML file): synoptic three-column view with highlighted spans,
+   severity filters, confirm / dismiss / ask-expert decisions, CSV and JSON export, and an audit trail
+   of what the verifier refuted.
+7. **Evaluation harness:** corruption injection creates labelled data at scale from real articles
+   (exact before/after logged); precision / recall / F1 / false-positive rate, per-type recall,
+   language attribution, and cost for four modes: `rules`, `llm8`, `llm70`, `cascade`.
 
----
+## Sovereign deployability
 
-## Data
+| Target | How |
+|---|---|
+| Air-gapped | `make run` (no network). Fresh analysis: local vLLM, see `docs/architecture.md` |
+| On-premise | Same container plus the two model servers inside the organisation |
+| Swiss sovereign cloud | CSCS Alps endpoint (used for development) |
 
-The `data/` directory must not exceed 100 MB.
+## Commands
 
----
+```bash
+python -m concordance doctor                  # check key, endpoint, model names
+python -m concordance ingest --sr 235.1       # fetch an act from Fedlex (or --preset, or --xml-dir)
+python -m concordance analyze                 # analyse the corpus, build out/review.html
+python -m concordance eval --max-per-type 25  # evaluation on injected ground truth
+python -m concordance demo --max-articles 60  # analyse + evaluate + UI (what make run does)
+python -m concordance export-hf               # dataset files for Hugging Face
+make test                                     # unit tests
+```
 
-## 📦 Submission Requirements & Deliverables
+## Layout
 
-❗️ Submissions are not handled on Devpost but via this URL only:
-http://hackapertus.ch/online-hack/submissions
+```
+src/concordance/   rules.py lexicon.py detector.py prompts.py llm.py corrupt.py evaluate.py
+                   fedlex.py report.py export_hf.py cli.py templates/review.html
+data/              corpus/ (Fedlex excerpt), cache/ (recorded Apertus responses), demo/ (synthetic)
+docs/              architecture.md, figures/
+tests/             rules, injection, Akoma Ntoso parsing, cascade logic (with a fake LLM)
+technical_report.md
+```
 
-The submission must: 
-1. follow the template repo and include all prerequisite files and definitions
-2. follow the specified input/output formats
-3. run in a Docker container, launched with `make run` from the root of the project
-4. run end-to-end when judges try to run it
+## Honest limitations
 
-### Git repo (URL)
-- Create your repo from this template (**Use this template**) and work in the `track_2b/` challenge directory. Delete the other track challenge directories.
-- Keep `track_2b/` as it is: don't rename it or move its files.
-- Set the repo to PUBLIC (Settings --> Collaborators --> Manage Visibility)
-- Submit the URL of YOUR Git repo.
+* Findings are **candidates for human review**, not legal conclusions.
+* Injected errors are cleaner than real ones, and the rule engine and the injector share a lexicon, so
+  **rule recall on injected data is optimistic**. The LLM stages do not share it; see the report.
+* Clean controls may contain real, unknown divergences (counted as false positives).
+* Romansh (the fourth language, partly authentic) is not covered.
 
-### Technical Report (pdf)
-- Update [technical_report.md](technical_report.md) in this repository with all the details for your submission.
-- Upload a pdf of your technical report to this directory, named as `TeamName_Report.pdf`.
-- Format: pdf, max. 6 pages w/o references
-- Submit the pdf of the technical report.
+## License
 
-### Demo video (URL)
-- Max. 2 min demo video of your prototype
-
-### Dataset (URL) - optional, depending on your project
-Submitted datasets must comply with our guidelines for responsibly sourced datasets.
-
-- Create a user account on Hugging Face
-- Clone our dataset template on Hugging Face: https://huggingface.co/datasets/HackApertus/online_hack_template
-- Complete the dataset card with all required information
-- Upload your dataset. It should consist of the following components:
-    - evaluation dataset (i.e. individual test cases)
-    - model response dataset (i.e. the model response to each test case)
-    - metadata file (i.e. additional information about each test case; where relevant, this file must contain instance-level licensing information) 
-- Make sure your dataset access control is set to PUBLIC
-- Provide the URL of _your_ data set
-
-
----
-
-## ⚖️ Judging Criteria
-
-1. Purposeful use of AI
-2. Technical rigour
-3. Value, cost & scalability
-4. Sovereign deployability
-5. Implementation feasibility
-
-Judges use a Scale 0–5 per dimension.
-
----
-
-## Support
-
-**Licensing requirements**
-Please check our Terms & Conditions (6. What you build is open source):
-https://hackapertus.ch/terms-and-conditions
-
-## FAQ
-💡 https://hackapertus.ch/faq
-
-## Contact
-💬 In case you have questions, join the conversation on Discord or send an email to “hello@hackapertus.ch”
+Code and data produced here: CC-BY-4.0, as required for HackApertus projects. Source texts are Swiss
+federal legislation from Fedlex (cite source and date). The synthetic demo corpus is invented (CC0).

@@ -1,0 +1,6 @@
+out/
+.env
+.git
+__pycache__/
+tests/
+data/raw/
