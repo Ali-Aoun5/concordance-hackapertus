@@ -114,3 +114,4 @@ Creative Commons Attribution 4.0 (CC-BY-4.0). All HackApertus projects are open-
 * Akoma Ntoso (OASIS LegalDocML) 3.0.
 * Apertus v1.5 (swiss-ai): https://huggingface.co/swiss-ai
 * `<<add any papers you cite, e.g. SwiLTra-Bench; Höfler and Sugisaki on Swiss legislative corpora>>`
+
