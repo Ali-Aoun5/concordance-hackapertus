@@ -373,7 +373,7 @@ def check_terminology(texts: dict) -> list:
         spans = {}
         for l in LANGS:
             spans[l] = []
-            for name in fams[l] & g:
+            for name in sorted(fams[l] & g):      # sorted: set order depends on PYTHONHASHSEED
                 if any(name not in present[o] for o in present if o != l) or l in odd:
                     m = lx.FAMILY_RE[name][l].search(texts[l])
                     if m:
