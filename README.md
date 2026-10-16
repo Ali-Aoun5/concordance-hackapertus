@@ -1,60 +1,85 @@
-# Hack Apertus — project template
+# Concordance: reading Swiss federal law in three languages at once
 
-Template repository for [Hack Apertus](https://hackapertus.ch/) submissions.
-Every project keeps almost the same layout, so organizers and judges find the
-same things in the same place.
+Track 2B (Own Project), Hack Apertus Online. Solo entry by Ali Aoun Mehdi.
+Built on Apertus v1.5 8B and 70B.
 
-## Select your track
-
-This repository holds one example project per track:
-
-- `track_1a/`
-- `track_1b/`
-- `track_2a/`
-- `track_2b/`
-
-Keep the directory for the track you are competing in **exactly as it is** —
-don't rename it or move its files — and delete the other track directories.
-That directory is your project root. Keep the files and directories as shown
-below.
-
-## The structure
-
-| Path | What it is |
-| --- | --- |
-| `README.md` | The challenge description and submission requirements for your track |
-| `technical_report.md` | The deeper write-up: architecture, evaluation, limitations |
-| `Makefile` | `make run` must spin up your project |
-| `src/` | Your code |
-| `data/` | Datasets — `track_1a`, `track_2a` and `track_2b` only; max. 100 MB |
-| `findings/` | Issue files — `track_1a` only |
-| `docs/` | Diagrams, notes, longer write-ups |
+Swiss federal law is authentic in German, French and Italian, with no single
+original. If one version says an authority *may* act and another says it *must*,
+the law says two things. Today this is caught mostly by manual review.
+Concordance is a second pair of eyes: it points at where the three versions
+appear to disagree. It does not decide which one is right.
 
 ## Run it
 
-Judges run `make run` from the root of the project, on a clean checkout:
+You need Docker only. No API key, no GPU and no network are needed.
 
 ```bash
 make run
 ```
 
-`make run` is expected to run the project using Docker, since that
-is how the judges will run it.
-- If you used other local open-weight models, include instructions for running the project in your technical report.
-- Use the following environment variables:
+This builds the image and runs it with `--network none`, replaying the recorded
+Apertus answers from `data/cache/`. Then open `out/review.html`. Also written:
+`out/summary.md`, `out/eval_table.md`, `out/findings.json`.
+
+No `make` (Windows)?
+```powershell
+docker build -t concordance .
+docker run --rm --network none -v "${PWD}\out:/app/out" concordance
 ```
-LLM_NAME — name and version of the model
-LLM_BASE_URL — endpoint base URL
-LLM_API_KEY — your API key
+
+Results are the same on every run and with any Python hash seed. A fresh
+clone gives the table in the report, with no missing model responses.
+(An earlier version depended on set ordering; that is fixed on the
+`post-deadline-fixes` branch.)
+
+## How it works
+
+1. **Align** the three language versions by article id (Fedlex Akoma Ntoso XML).
+2. **Rules** (no model): numbers, units, dates, cross-references, modal verbs,
+   negation, quantifiers, legal terms.
+3. **Apertus 8B** reads all three versions and proposes divergences as JSON with
+   verbatim quotes.
+4. **Apertus 70B** confirms or refutes, only on articles that have candidates.
+5. **Guards:** quotes are checked against the source text; the 70B cannot
+   silently delete a rule finding for a number, unit, date or reference.
+6. **Review interface:** one offline HTML file, three columns, confirm/dismiss.
+
+## Results (136 test cases from 3 real federal acts)
+
+| Setup | Precision | Recall | F1 | False alarms on clean |
+| --- | --- | --- | --- | --- |
+| Rules only | 0.55 | 0.84 | 0.66 | 0.69 |
+| Apertus 70B on every article | 0.95 | 0.28 | 0.43 | 0.01 |
+| Cascade (confirmed findings only) | 0.84 | 0.69 | 0.76 | 0.13 |
+
+The cascade costs about 69% of running the 70B on everything. Full tables,
+per-type recall and failures are in `technical_report.md` and the PDF report.
+Dataset: https://huggingface.co/datasets/AliAounMehdi/concordance-trilingual-divergence
+
+## Limits
+
+- Findings are candidates for human review, not legal conclusions.
+- The test errors are injected, and the rules and the injector share a word list,
+  so rule recall on injected data is optimistic.
+- Only three acts were tested. Romansh, tables and annexes are not covered.
+- The local-server (air-gapped GPU) path is documented in `docs/architecture.md`
+  but I did not run it on local hardware.
+- No demo video yet.
+
+## Commands
+
+```bash
+make test                       # unit tests
+python -m concordance doctor    # check key, endpoint, model names
+make warm                       # record fresh answers (needs .env with a key)
 ```
 
-## Getting started
+## Layout
 
-1. Click **Use this template** to create your own repository.
-2. Delete the other track directories. Don't rename or restructure yours.
-3. Read its `README.md` and fill in `technical_report.md`.
-4. Make `make run` work from the root of the project, on a clean checkout.
+`src/concordance/` code, `data/` corpus and recorded answers, `docs/` notes and
+figures, `tests/`, `technical_report.md`.
 
-## License
+## Licence
 
-All Hack Apertus projects are open-sourced. Please check our Terms & Conditions for specific licensing details (6. What you build is open source): https://hackapertus.ch/terms-and-conditions
+Code: Apache-2.0. Report and dataset: CC-BY-4.0. Source texts are Swiss federal
+legislation from Fedlex. The synthetic demo law is invented.
