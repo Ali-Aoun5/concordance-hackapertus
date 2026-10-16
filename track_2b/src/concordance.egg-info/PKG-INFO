@@ -1,7 +1,0 @@
-Metadata-Version: 2.4
-Name: concordance
-Version: 0.1.0
-Summary: Cross-lingual consistency auditing for Swiss federal law with Apertus
-Requires-Python: >=3.10
-Requires-Dist: requests>=2.31
-Requires-Dist: matplotlib>=3.8
